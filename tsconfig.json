@@ -20,7 +20,7 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@/*": ["packages/api/src/*"],
-      "@sunrin-para/database/*": ["../database/*"]
+      "@your-organization/database/*": ["../database/*"]
     },
     "include": ["packages/api/src/**/*.ts"],
     "exclude": ["node_modules", "packages/api/dist", "scripts/**/*.ts"]

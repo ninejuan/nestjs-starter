@@ -64,19 +64,19 @@ export class MinioController {
     @UploadedFiles() files: Array<Express.Multer.File>,
   ) {
     if (!files || !(type in FileType)) {
-      throw new BadRequestException()
+      throw new BadRequestException('유효하지 않은 파일 또는 타입입니다.')
     }
 
-    const filesUrlList: string[] = []
-    for (const file of files) {
-      const fileUrl = await this.minioService.uploadFile(
-        new File([file.buffer], file.originalname),
-        this.minioService.generateFilename(file.originalname),
-        type,
-      )
-      filesUrlList.push(fileUrl)
-    }
-    return filesUrlList
+    return await Promise.all(
+      files.map(async (file) => {
+        const fileName = this.minioService.generateFilename(file.originalname)
+        return await this.minioService.uploadFile(
+          new File([file.buffer], file.originalname),
+          fileName,
+          type,
+        )
+      }),
+    )
   }
 
   @Get('/:type/:filename')
@@ -84,10 +84,11 @@ export class MinioController {
     @Param('type') type: string,
     @Param('filename') filename: string,
   ) {
-    return await this.minioService.getFile(
-      FileType[type.toUpperCase()],
-      filename,
-    )
+    const fileType = FileType[type.toUpperCase()]
+    if (!fileType) {
+      throw new BadRequestException('유효하지 않은 파일 타입입니다.')
+    }
+    return await this.minioService.getFile(fileType, filename)
   }
 
   @Delete('/:type/:filename')
@@ -97,9 +98,10 @@ export class MinioController {
     @Param('type') type: string,
     @Param('filename') filename: string,
   ) {
-    return await this.minioService.deleteFile(
-      FileType[type.toUpperCase()],
-      filename,
-    )
+    const fileType = FileType[type.toUpperCase()]
+    if (!fileType) {
+      throw new BadRequestException('유효하지 않은 파일 타입입니다.')
+    }
+    return await this.minioService.deleteFile(fileType, filename)
   }
 }

@@ -1,6 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger'
-import { IsEmail, IsEnum, IsOptional, IsString, Length } from 'class-validator'
-import { Permission as PermissionEnum } from '@/common/enums/Permission.enum'
+import { ApiProperty } from '@nestjs/swagger';
+import { IsEmail, IsEnum, IsString } from 'class-validator';
+import { Permission as PermissionEnum } from '@/common/enums/Permission.enum';
 
 export class CreateUserDto {
   @IsEmail()
@@ -8,34 +8,29 @@ export class CreateUserDto {
     description: '사용자 이메일',
     example: 'user@example.com',
   })
-  email: string
-
-  @IsString()
-  @IsOptional()
-  @Length(6, 20)
-  @ApiProperty({
-    description: '사용자 비밀번호 (선택)',
-    example: 'password123',
-    required: false,
-  })
-  password?: string
+  email: string;
 
   @IsString()
   @ApiProperty({
     description: '사용자 이름',
     example: '홍길동',
   })
-  name: string
+  name: string;
+
+  @IsString()
+  @ApiProperty({
+    description: '사용자 프로필 사진',
+    example: 'https://example.com/profile.jpg',
+  })
+  profilePhoto: string;
 
   @IsEnum(PermissionEnum)
   @ApiProperty({
     description: '사용자 권한 (선택)',
     example: 'USER',
-    enum: [
-      'SUPER', 'MODERATOR', 'MANAGER', 'USER',
-    ],
+    enum: ['ADMIN', 'USER'],
     items: { type: 'string' },
     required: false,
   })
-  permission?: string
+  permission?: string;
 }

@@ -1,15 +1,14 @@
 model User {
   uuid         String     @id @default(uuid())
-  email      String     @unique
-  password   String?
-  name       String
-  permission Permission @default(USER)
+  email        String     @unique
+  name         String
+  profilePhoto String?     @default("https://s3.juany.dev/pkg/imgs/sigmd/favicon.png")
+  permission   Permission @default(USER)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  refreshToken  String?
-  validationKey String?
+  refreshToken String?
 }
 
 enum Permission {

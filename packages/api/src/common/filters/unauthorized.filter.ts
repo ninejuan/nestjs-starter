@@ -9,7 +9,6 @@ import { Response } from 'express'
 @Catch(UnauthorizedException)
 export class UnauthorizedExceptionFilter implements ExceptionFilter {
   catch(exception: UnauthorizedException, host: ArgumentsHost) {
-    console.log('401 exception catched 0')
     const ctx = host.switchToHttp()
     const response = ctx.getResponse<Response>()
 

@@ -1,6 +1,4 @@
 export enum Permission {
-  SUPER,
-  MODERATOR,
-  MANAGER,
+  ADMIN,
   USER,
 }

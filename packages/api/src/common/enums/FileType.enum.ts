@@ -1,6 +1,4 @@
 export enum FileType {
-  MEMBERS = 'members',
-  PORTFOLIO = 'portfolios',
-  GALLERY = 'gallery',
-  APPLICANTS = 'apply',
+  FOO = 'BAR',
+  CHO = 'BAP',
 }

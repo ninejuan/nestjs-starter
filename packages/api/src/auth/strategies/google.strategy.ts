@@ -19,20 +19,24 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
 
   private async validateEmailAddr(email: string) {
     return new RegExp(
-      '^[a-zA-Z0-9._%+-]+@(sunrint.hs.kr|sunrin-para.dev)$',
+      `^[a-zA-Z0-9._%+-]+@(${this.configService.get<string>('ALLOWED_EMAIL_DOMAINS')})$`,
     ).test(email);
   }
 
   async validate(
+    _req: Request,
     accessToken: string,
-    _: string,
+    _refreshToken: string,
     profile: GoogleProfile,
     done: VerifyCallback,
   ): Promise<unknown> {
     const isValidEmail = await this.validateEmailAddr(profile._json.email);
-    if (!isValidEmail) {
+    if (
+      !isValidEmail &&
+      this.configService.get<boolean>('USE_EMAIL_RESTRICTION') == true
+    ) {
       throw new ForbiddenException(
-        '선린인터넷고 또는 PARA 도메인을 이용하지 않는 사용자는 접근할 수 없습니다.',
+        '조직의 Google Workspace 계정을 이용하지 않는 사용자는 접근할 수 없습니다.',
       );
     }
 

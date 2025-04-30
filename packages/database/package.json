@@ -11,7 +11,8 @@
     "generate": "prisma generate",
     "migrate": "prisma migrate dev",
     "migrate:prod": "prisma migrate deploy",
-    "studio": "prisma studio"
+    "studio": "prisma studio",
+    "format": "prisma format"
   },
   "peerDependencies": {
     "@prisma/client": "^6.1.0",
