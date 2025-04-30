@@ -1,0 +1,9 @@
+model Hello {
+  id    Int   @id @default(autoincrement())
+
+  foo   String
+  bar   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

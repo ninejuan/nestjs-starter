@@ -1,0 +1,132 @@
+{
+  "name": "@your-organization/database",
+  "description": "NestJS Starter template DB REPO with prisma",
+  "version": "1.0.0",
+  "author": {
+    "name": "Juan Lee",
+    "email": "iam@juany.dev",
+    "url": "https://juany.dev"
+  },
+  "scripts": {
+    "generate": "prisma generate",
+    "migrate": "prisma migrate dev",
+    "migrate:prod": "prisma migrate deploy",
+    "studio": "prisma studio"
+  },
+  "peerDependencies": {
+    "@prisma/client": "^6.1.0",
+    "prisma": "^6.1.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.1.0"
+  },
+  "devDependencies": {
+    "@mermaid-js/mermaid-cli": "^11.4.2",
+    "prisma": "^6.3.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ninejuan/nestjs-starter.git"
+  },
+  "main": "./client/index.js",
+  "types": "./client/index.d.ts",
+  "browser": "./client/index-browser.js",
+  "exports": {
+    ".": {
+      "require": {
+        "node": "./client/index.js",
+        "edge-light": "./client/wasm.js",
+        "workerd": "./client/wasm.js",
+        "worker": "./client/wasm.js",
+        "browser": "./client/index-browser.js",
+        "default": "./client/index.js"
+      },
+      "import": {
+        "node": "./client/index.js",
+        "edge-light": "./client/wasm.js",
+        "workerd": "./client/wasm.js",
+        "worker": "./client/wasm.js",
+        "browser": "./client/index-browser.js",
+        "default": "./client/index.js"
+      },
+      "default": "./client/index.js"
+    },
+    "./edge": {
+      "types": "./client/edge.d.ts",
+      "require": "./client/edge.js",
+      "import": "./client/edge.js",
+      "default": "./client/edge.js"
+    },
+    "./react-native": {
+      "types": "./client/react-native.d.ts",
+      "require": "./client/react-native.js",
+      "import": "./client/react-native.js",
+      "default": "./client/react-native.js"
+    },
+    "./extension": {
+      "types": "./client/extension.d.ts",
+      "require": "./client/extension.js",
+      "import": "./client/extension.js",
+      "default": "./client/extension.js"
+    },
+    "./index-browser": {
+      "types": "./client/index.d.ts",
+      "require": "./client/index-browser.js",
+      "import": "./client/index-browser.js",
+      "default": "./client/index-browser.js"
+    },
+    "./index": {
+      "types": "./client/index.d.ts",
+      "require": "./client/index.js",
+      "import": "./client/index.js",
+      "default": "./client/index.js"
+    },
+    "./wasm": {
+      "types": "./client/wasm.d.ts",
+      "require": "./client/wasm.js",
+      "import": "./client/wasm.js",
+      "default": "./client/wasm.js"
+    },
+    "./runtime/library": {
+      "types": "./client/runtime/library.d.ts",
+      "require": "./client/runtime/library.js",
+      "import": "./client/runtime/library.js",
+      "default": "./client/runtime/library.js"
+    },
+    "./runtime/binary": {
+      "types": "./client/runtime/binary.d.ts",
+      "require": "./client/runtime/binary.js",
+      "import": "./client/runtime/binary.js",
+      "default": "./client/runtime/binary.js"
+    },
+    "./generator-build": {
+      "require": "./client/generator-build/index.js",
+      "import": "./client/generator-build/index.js",
+      "default": "./client/generator-build/index.js"
+    },
+    "./sql": {
+      "require": {
+        "types": "./client/sql.d.ts",
+        "node": "./client/sql.js",
+        "default": "./client/sql.js"
+      },
+      "import": {
+        "types": "./client/sql.d.ts",
+        "node": "./client/sql.mjs",
+        "default": "./client/sql.mjs"
+      },
+      "default": "./client/sql.js"
+    },
+    "./*": "./client/*"
+  },
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "client"
+  ],
+  "packageManager": "yarn@4.7.0"
+}

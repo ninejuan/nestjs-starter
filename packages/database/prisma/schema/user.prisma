@@ -1,0 +1,18 @@
+model User {
+  uuid         String     @id @default(uuid())
+  email      String     @unique
+  password   String?
+  name       String
+  permission Permission @default(USER)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  refreshToken  String?
+  validationKey String?
+}
+
+enum Permission {
+  ADMIN
+  USER
+}
