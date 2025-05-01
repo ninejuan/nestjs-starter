@@ -11,6 +11,8 @@ import { FooBarPipe } from './common/pipes/foo.pipe';
 import { ConfigService } from '@nestjs/config';
 import cookieParser from 'cookie-parser';
 
+import './instrument';
+
 const logger = new Logger('bootstrap');
 
 async function bootstrap() {

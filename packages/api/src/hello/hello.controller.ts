@@ -1,7 +1,9 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseFilters } from '@nestjs/common';
 import { HelloService } from './hello.service';
 import { CreateHelloDto } from './dto/create-hello.dto';
+import { SentryFilter } from '@/common/filters/global.filter';
 
+@UseFilters(SentryFilter)
 @Controller('hello')
 export class HelloController {
   constructor(private readonly helloService: HelloService) {}
