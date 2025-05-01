@@ -9,6 +9,7 @@ import { UserRepository } from './repository/user.repo';
 import { ChangePermissionDto } from './dto/change-permission.dto';
 import { DeleteAccountDto } from './dto/delete-account.dto';
 
+
 @Injectable()
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}

@@ -7,7 +7,7 @@ import { HttpExceptionFilter } from '@/common/filters/http-exception.filter';
 import { PrismaExceptionFilter } from '@/common/filters/prisma-exception.filter';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { SwaggerTheme, SwaggerThemeNameEnum } from 'swagger-themes';
-import { NegativeNumberPipe } from './common/pipes/foo.pipe';
+import { FooBarPipe } from './common/pipes/foo.pipe';
 import { ConfigService } from '@nestjs/config';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
@@ -28,7 +28,7 @@ async function bootstrap() {
       transformOptions: { enableImplicitConversion: true },
       forbidNonWhitelisted: true,
     }),
-    new NegativeNumberPipe(),
+    new FooBarPipe(),
   );
 
   app.enableCors({

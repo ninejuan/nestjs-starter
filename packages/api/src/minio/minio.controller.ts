@@ -57,7 +57,7 @@ export class MinioController {
   })
   @Post('/:type')
   @UseGuards(AdminGuard)
-  @SetMetadata('permission', 'MANAGER')
+  @SetMetadata('permission', 'ADMIN')
   @UseInterceptors(FilesInterceptor('files'))
   async uploadFile(
     @Param('type') type: FileType,
