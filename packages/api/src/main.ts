@@ -10,16 +10,15 @@ import { SwaggerTheme, SwaggerThemeNameEnum } from 'swagger-themes';
 import { FooBarPipe } from './common/pipes/foo.pipe';
 import { ConfigService } from '@nestjs/config';
 import cookieParser from 'cookie-parser';
-import bodyParser from 'body-parser';
 
 const logger = new Logger('bootstrap');
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  const configService = new ConfigService();
+  const configService = app.get(ConfigService);
 
   app.use(cookieParser());
-  app.use(bodyParser.json());
+
   app.useGlobalFilters(new HttpExceptionFilter(), new PrismaExceptionFilter());
   app.useGlobalPipes(
     new ValidationPipe({
@@ -47,26 +46,14 @@ async function bootstrap() {
   const prismaService = app.get(PrismaService);
   await prismaService.enableShutdownHooks(app);
 
+  const swaggerTheme = new SwaggerTheme().getBuffer(SwaggerThemeNameEnum.DARK);
+
   const config = new DocumentBuilder()
     .setTitle(configService.get<string>('NAME'))
     .setDescription(configService.get<string>('DESCRIPTION'))
     .setVersion(configService.get<string>('VERSION'))
-    .addCookieAuth(
-      'accessToken',
-      {
-        type: 'apiKey',
-        in: 'cookie',
-      },
-      'accessToken',
-    )
-    .addCookieAuth(
-      'refreshToken',
-      {
-        type: 'apiKey',
-        in: 'cookie',
-      },
-      'refreshToken',
-    )
+    .addCookieAuth('accessToken', { type: 'apiKey', in: 'cookie' })
+    .addCookieAuth('refreshToken', { type: 'apiKey', in: 'cookie' })
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
@@ -75,7 +62,7 @@ async function bootstrap() {
     jsonDocumentUrl: 'api-docs/json',
     explorer: true,
     yamlDocumentUrl: 'api-docs/yaml',
-    customCss: new SwaggerTheme().getBuffer(SwaggerThemeNameEnum.DARK),
+    customCss: swaggerTheme,
     customfavIcon: 'https://s3.juany.dev/pkg/imgs/sigmd/favicon.png',
     customSiteTitle: 'NestJs API Swagger',
   });
@@ -84,5 +71,9 @@ async function bootstrap() {
 }
 
 bootstrap()
-  .then(() => logger.log('NestJs API Started successfully'))
-  .catch((error) => logger.error('Failed to start NestJs API:', error));
+  .then(() =>
+    logger.log(
+      `✅ NestJS API is running on http://${new ConfigService().get<string>('DOMAIN')}`,
+    ),
+  )
+  .catch((error) => logger.error('❌ Failed to start NestJS API:', error));
