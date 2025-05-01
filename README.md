@@ -15,3 +15,6 @@ gh repo create <project-name> --template ninejuan/nestjs-starter --clone
 
 ## Deploy with Public Cloud
 Preparing.
+
+## License
+[MIT](https://github.com/ninejuan/nestjs-starter/blob/main/LICENSE)
