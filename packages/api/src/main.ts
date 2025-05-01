@@ -9,6 +9,8 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { SwaggerTheme, SwaggerThemeNameEnum } from 'swagger-themes';
 import { NegativeNumberPipe } from './common/pipes/foo.pipe';
 import { ConfigService } from '@nestjs/config';
+import cookieParser from 'cookie-parser';
+import bodyParser from 'body-parser';
 
 const logger = new Logger('bootstrap');
 
@@ -16,11 +18,14 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = new ConfigService();
 
+  app.use(cookieParser());
+  app.use(bodyParser.json());
   app.useGlobalFilters(new HttpExceptionFilter(), new PrismaExceptionFilter());
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
       transform: true,
+      transformOptions: { enableImplicitConversion: true },
       forbidNonWhitelisted: true,
     }),
     new NegativeNumberPipe(),
@@ -29,7 +34,13 @@ async function bootstrap() {
   app.enableCors({
     origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
     credentials: true,
-    allowedHeaders: ['Content-Type', 'Accept', 'Authorization', 'Set-Cookie'],
+    allowedHeaders: [
+      'Content-Type',
+      'Accept',
+      'Authorization',
+      'Set-Cookie',
+      'Cookie',
+    ],
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
   });
 

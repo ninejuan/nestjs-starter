@@ -18,4 +18,10 @@ export class HelloController {
   findOne(@Param('foo') foo: string) {
     return this.helloService.getFoo(foo);
   }
+
+  @Post()
+  create(@Body() createHelloDto: CreateHelloDto) {
+    console.log(createHelloDto);
+    return this.helloService.create(createHelloDto);
+  }
 }

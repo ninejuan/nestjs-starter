@@ -14,7 +14,6 @@ import {
   ApiTags,
   ApiOperation,
   ApiResponse,
-  ApiBody,
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { UserGuard } from '@/auth/guards/user.guard';
@@ -74,6 +73,20 @@ export class AuthController {
     this.cookieService.setTokens(res, token.accessToken, token.refreshToken);
 
     return 'success';
+  }
+
+  @Get('/me')
+  @ApiOperation({ summary: '내 정보 조회' })
+  @ApiResponse({ type: UserDataDto })
+  @ApiBearerAuth('accessToken')
+  @UseGuards(UserGuard)
+  async getMe(
+    @Req()
+    req: Request & {
+      user: UserDataDto;
+    },
+  ) {
+    return req.user;
   }
 
   @ApiOperation({ summary: '로그아웃' })
