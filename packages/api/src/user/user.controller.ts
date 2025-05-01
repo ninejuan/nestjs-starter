@@ -5,7 +5,6 @@ import {
   SetMetadata,
   UseGuards,
   Body,
-  Req,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -29,12 +28,7 @@ export class UserController {
   @Post('/permission/change')
   @ApiOperation({ summary: '권한 변경' })
   @ApiResponse({ type: Boolean })
-  async changePermission(
-    @Req() req: Request,
-    @Body() changePermissionDto: ChangePermissionDto,
-  ) {
-    console.debug(changePermissionDto);
-    console.debug(req.body);
+  async changePermission(@Body() changePermissionDto: ChangePermissionDto) {
     return await this.userService.changePermission(changePermissionDto);
   }
 

@@ -40,8 +40,7 @@ export class UserService {
   }
 
   async changePermission(dto: ChangePermissionDto) {
-    // await this.findUserByEmail(dto.email);
-    // return this.userRepository.changePermission(dto.email, dto.newPermission);
+    return this.userRepository.changePermission(dto.email, dto.newPermission);
   }
 
   async deleteAccount(dto: DeleteAccountDto) {
