@@ -3,12 +3,14 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { PrismaService } from '@/common/prisma/prisma.service';
-import { UnauthorizedExceptionFilter } from '@/common/filters/unauthorized.filter';
+import { HttpExceptionFilter } from '@/common/filters/http-exception.filter';
 import { PrismaExceptionFilter } from '@/common/filters/prisma-exception.filter';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { SwaggerTheme, SwaggerThemeNameEnum } from 'swagger-themes';
-import { NegativeNumberPipe } from './common/pipes/negative-number.pipe';
+import { NegativeNumberPipe } from './common/pipes/foo.pipe';
 import { ConfigService } from '@nestjs/config';
+import { TransformInterceptor } from './common/interceptor/transform.interceptor';
+import { ApiResponseDto } from './common/dto/api-response.dto';
 
 const logger = new Logger('bootstrap');
 
@@ -16,10 +18,8 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = new ConfigService();
 
-  app.useGlobalFilters(
-    new UnauthorizedExceptionFilter(),
-    new PrismaExceptionFilter(),
-  );
+  app.useGlobalFilters(new HttpExceptionFilter(), new PrismaExceptionFilter());
+  app.useGlobalInterceptors(new TransformInterceptor());
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -61,7 +61,10 @@ async function bootstrap() {
     )
     .build();
 
-  const document = SwaggerModule.createDocument(app, config);
+  const document = SwaggerModule.createDocument(app, config, {
+    extraModels: [ApiResponseDto],
+  });
+
   SwaggerModule.setup('api-docs', app, document, {
     jsonDocumentUrl: 'api-docs/json',
     explorer: true,
