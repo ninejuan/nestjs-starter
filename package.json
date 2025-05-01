@@ -1,5 +1,6 @@
 {
   "name": "nestjs-starter-template",
+  "version": "dev",
   "packageManager": "yarn@4.3.1",
   "scripts": {
     "api": "yarn workspace @your-organization/api",

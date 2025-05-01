@@ -1,6 +1,6 @@
 {
   "name": "@your-organization/api",
-  "version": "1.0.1",
+  "version": "dev",
   "description": "NestJS Starter template MAIN API",
   "author": {
     "name": "Juan Lee",
