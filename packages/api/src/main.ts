@@ -43,7 +43,22 @@ async function bootstrap() {
     .setTitle(configService.get<string>('NAME'))
     .setDescription(configService.get<string>('DESCRIPTION'))
     .setVersion(configService.get<string>('VERSION'))
-    .addBearerAuth()
+    .addCookieAuth(
+      'accessToken',
+      {
+        type: 'apiKey',
+        in: 'cookie',
+      },
+      'accessToken',
+    )
+    .addCookieAuth(
+      'refreshToken',
+      {
+        type: 'apiKey',
+        in: 'cookie',
+      },
+      'refreshToken',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

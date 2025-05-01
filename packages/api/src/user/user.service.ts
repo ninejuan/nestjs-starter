@@ -11,7 +11,7 @@ import * as bcrypt from 'bcryptjs';
 import { Permission as PermissionEnum } from '@/common/enums/Permission.enum';
 import { UserRepository } from './repository/user.repo';
 import { ConfigService } from '@nestjs/config';
-import { AuthService } from '@/auth/auth.service';
+import { AuthService } from '@/auth/services/auth.service';
 
 @Injectable()
 export class UserService {

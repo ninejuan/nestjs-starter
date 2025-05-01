@@ -1,15 +1,15 @@
-import { forwardRef, Module } from '@nestjs/common'
-import { AuthService } from './auth.service'
-import { AuthController } from './auth.controller'
-import { PassportModule } from '@nestjs/passport'
-import { JwtModule } from '@nestjs/jwt'
-import { PrismaService } from '@/common/prisma/prisma.service'
-import { JwtStrategy } from './strategies/jwt.strategy'
-import { GoogleStrategy } from './strategies/google.strategy'
-import { TokenRepository } from './repository/token.repo'
-import { UserModule } from '@/user/user.module'
-import { ConfigModule, ConfigService } from '@nestjs/config'
-import { HttpModule } from '@nestjs/axios'
+import { forwardRef, Module } from '@nestjs/common';
+import { AuthService } from './services/auth.service';
+import { AuthController } from './auth.controller';
+import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
+import { PrismaService } from '@/common/prisma/prisma.service';
+import { JwtStrategy } from './strategies/jwt.strategy';
+import { GoogleStrategy } from './strategies/google.strategy';
+import { UserModule } from '@/user/user.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { HttpModule } from '@nestjs/axios';
+import { CookieService } from './services/cookie.service';
 
 @Module({
   imports: [
@@ -20,7 +20,7 @@ import { HttpModule } from '@nestjs/axios'
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
-        signOptions: { expiresIn: '2h' },
+        signOptions: { expiresIn: '6h' },
       }),
     }),
     HttpModule.registerAsync({
@@ -29,14 +29,12 @@ import { HttpModule } from '@nestjs/axios'
   ],
   controllers: [AuthController],
   providers: [
-    TokenRepository,
     AuthService,
     JwtStrategy,
     GoogleStrategy,
     PrismaService,
+    CookieService,
   ],
-  exports: [
-    AuthService, JwtModule, TokenRepository, HttpModule,
-  ],
+  exports: [AuthService, JwtModule, HttpModule, CookieService],
 })
 export class AuthModule {}

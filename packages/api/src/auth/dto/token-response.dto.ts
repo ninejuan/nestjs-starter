@@ -1,18 +1,20 @@
-import { ApiProperty } from '@nestjs/swagger'
-import { IsString } from 'class-validator'
+import { ApiProperty } from '@nestjs/swagger';
+import { IsJWT, IsString } from 'class-validator';
 
 export class TokenResponseDto {
-  @IsString()
+  @IsJWT()
   @ApiProperty({
-    description: '액세스 토큰',
-    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+    description: 'JWT 액세스 토큰',
+    example:
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ',
   })
-  accessToken: string
+  accessToken: string;
 
-  @IsString()
+  @IsJWT()
   @ApiProperty({
-    description: '리프레시 토큰',
-    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+    description: 'JWT 리프레시 토큰',
+    example:
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ',
   })
-  refreshToken: string
+  refreshToken: string;
 }

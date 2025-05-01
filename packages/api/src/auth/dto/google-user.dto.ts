@@ -1,18 +1,21 @@
-import { ApiProperty } from '@nestjs/swagger'
-import { IsEmail, IsString } from 'class-validator'
+import { ApiProperty } from '@nestjs/swagger';
+import { IsEmail, IsString, Matches } from 'class-validator';
 
 export class GoogleUserDto {
   @IsEmail()
   @ApiProperty({
-    description: '사용자 이메일',
-    example: 'dev.juany@gmail.com',
+    description: 'Google 계정 이메일',
+    example: 'user@gmail.com',
   })
-  email: string
+  email: string;
 
   @IsString()
-  @ApiProperty({
-    description: '액세스 토큰',
-    example: 'ya29.a0AfH6SMB',
+  @Matches(/^ya29\.[a-zA-Z0-9_-]+$/, {
+    message: '유효하지 않은 Google 액세스 토큰입니다.',
   })
-  accessToken: string
+  @ApiProperty({
+    description: 'Google OAuth 액세스 토큰',
+    example: 'ya29.a0AfH6SMB...',
+  })
+  accessToken: string;
 }

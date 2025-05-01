@@ -17,10 +17,12 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     });
   }
 
-  private async validateEmailAddr(email: string) {
-    return new RegExp(
-      `^[a-zA-Z0-9._%+-]+@(${this.configService.get<string>('ALLOWED_EMAIL_DOMAINS')})$`,
-    ).test(email);
+  private validateEmailDomain(email: string): boolean {
+    const allowedDomains = this.configService.get<string>(
+      'ALLOWED_EMAIL_DOMAINS',
+    );
+    const emailRegex = new RegExp(`^[a-zA-Z0-9._%+-]+@(${allowedDomains})$`);
+    return emailRegex.test(email);
   }
 
   async validate(
@@ -29,20 +31,34 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     _refreshToken: string,
     profile: GoogleProfile,
     done: VerifyCallback,
-  ): Promise<unknown> {
-    const isValidEmail = await this.validateEmailAddr(profile._json.email);
-    if (
-      !isValidEmail &&
-      this.configService.get<boolean>('USE_EMAIL_RESTRICTION') == true
-    ) {
-      throw new ForbiddenException(
-        '조직의 Google Workspace 계정을 이용하지 않는 사용자는 접근할 수 없습니다.',
+  ): Promise<void> {
+    const { email } = profile._json;
+
+    if (!email) {
+      return done(
+        new ForbiddenException('이메일 정보를 가져올 수 없습니다.'),
+        null,
       );
     }
 
-    const user: Partial<GoogleUserDto> = new GoogleUserDto();
-    user.email = profile._json.email;
-    user.accessToken = accessToken;
+    const isEmailAllowed = this.validateEmailDomain(email);
+    const useEmailRestriction = this.configService.get<boolean>(
+      'USE_EMAIL_RESTRICTION',
+    );
+
+    if (!isEmailAllowed && useEmailRestriction) {
+      return done(
+        new ForbiddenException(
+          '조직의 Google Workspace 계정을 이용하지 않는 사용자는 접근할 수 없습니다.',
+        ),
+        null,
+      );
+    }
+
+    const user: GoogleUserDto = {
+      email,
+      accessToken,
+    };
 
     return done(null, user);
   }

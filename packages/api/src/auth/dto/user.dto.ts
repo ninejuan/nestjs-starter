@@ -4,16 +4,16 @@ import {
   IsDateString,
   IsEmail,
   IsEnum,
-  IsOptional,
   IsString,
+  IsUUID,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class UserDataDto {
-  @IsString()
+  @IsUUID()
   @ApiProperty({
     description: '사용자 고유 UUID',
-    example: 'user-uuid',
+    example: '123e4567-e89b-12d3-a456-426614174000',
   })
   uuid: string;
 
@@ -33,7 +33,7 @@ export class UserDataDto {
 
   @IsString()
   @ApiProperty({
-    description: '사용자 프로필 사진',
+    description: '사용자 프로필 사진 URL',
     example: 'https://example.com/profile.jpg',
   })
   profilePhoto: string;
@@ -42,10 +42,9 @@ export class UserDataDto {
   @ApiProperty({
     description: '사용자 권한',
     example: 'USER',
-    enum: ['ADMIN', 'USER'],
-    items: { type: 'string' },
+    enum: PermissionEnum,
   })
-  permission: string;
+  permission: PermissionEnum;
 
   @IsDateString()
   @Type(() => Date)
@@ -62,13 +61,4 @@ export class UserDataDto {
     example: '2024-01-01T00:00:00.000Z',
   })
   updatedAt: Date;
-
-  @IsOptional()
-  @IsString()
-  @ApiProperty({
-    description: '리프레시 토큰',
-    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
-    required: false,
-  })
-  refreshToken?: string;
 }

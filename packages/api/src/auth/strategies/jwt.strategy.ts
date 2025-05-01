@@ -21,18 +21,19 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: Partial<UserDataDto>) {
-    if (!payload) {
-      throw new UnauthorizedException('JWT Payload가 없습니다.');
+    if (!payload?.email) {
+      throw new UnauthorizedException('유효하지 않은 토큰입니다.');
     }
+
     const user = await this.userService.findUserByEmail(payload.email);
     if (!user) {
-      throw new UnauthorizedException('유저를 찾을 수 없습니다.');
+      throw new UnauthorizedException('존재하지 않는 사용자입니다.');
     }
 
     return {
-      id: payload.uuid,
-      email: payload.email,
-      permission: payload.permission,
+      id: user.uuid,
+      email: user.email,
+      permission: user.permission,
     };
   }
 }

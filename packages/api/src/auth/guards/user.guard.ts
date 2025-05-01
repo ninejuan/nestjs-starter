@@ -13,32 +13,38 @@ export class UserGuard extends AuthGuard('jwt') {
     super();
   }
 
-  private async validateEmailAddr(email: string) {
-    return new RegExp(
-      `^[a-zA-Z0-9._%+-]+@(${this.configService.get<string>('ALLOWED_EMAIL_DOMAINS')})$`,
-    ).test(email);
+  private validateEmailDomain(email: string): boolean {
+    const allowedDomains = this.configService.get<string>(
+      'ALLOWED_EMAIL_DOMAINS',
+    );
+    const emailRegex = new RegExp(`^[a-zA-Z0-9._%+-]+@(${allowedDomains})$`);
+    return emailRegex.test(email);
   }
 
-  async canActivate(context: ExecutionContext): Promise<boolean | null> {
-    const canActivate = (await super.canActivate(context)) as boolean;
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const canActivate = await super.canActivate(context);
     if (!canActivate) {
       return false;
     }
 
     const request = context.switchToHttp().getRequest();
     const user = request.user;
-    if (!user) {
-      throw new InternalServerErrorException('로그인이 필요합니다.');
+
+    if (!user?.email) {
+      throw new InternalServerErrorException('인증 정보가 올바르지 않습니다.');
     }
 
-    if (
-      !this.validateEmailAddr(user.email) ||
-      this.configService.get<boolean>('USE_EMAIL_RESTRICTION') == true
-    ) {
+    const isEmailAllowed = this.validateEmailDomain(user.email);
+    const useEmailRestriction = this.configService.get<boolean>(
+      'USE_EMAIL_RESTRICTION',
+    );
+
+    if (!isEmailAllowed && useEmailRestriction) {
       throw new ForbiddenException(
         '조직의 Google Workspace 계정을 이용하지 않는 사용자는 접근할 수 없습니다.',
       );
     }
+
     return true;
   }
 }

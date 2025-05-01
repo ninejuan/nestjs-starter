@@ -10,15 +10,14 @@ import { Permission } from '../../common/enums/Permission.enum';
 
 @Injectable()
 export class AdminGuard extends AuthGuard('jwt') {
-  constructor(private reflector: Reflector) {
+  constructor(private readonly reflector: Reflector) {
     super();
   }
 
-  async canActivate(context: ExecutionContext): Promise<boolean | null> {
-    const requiredPermission = this.reflector.getAllAndOverride<string>(
-      'permission',
-      [context.getHandler(), context.getClass()],
-    );
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const requiredPermission = this.reflector.getAllAndOverride<
+      keyof typeof Permission
+    >('permission', [context.getHandler(), context.getClass()]);
 
     if (!requiredPermission || Permission[requiredPermission] < 0) {
       throw new InternalServerErrorException(
@@ -26,7 +25,7 @@ export class AdminGuard extends AuthGuard('jwt') {
       );
     }
 
-    const canActivate = (await super.canActivate(context)) as boolean;
+    const canActivate = await super.canActivate(context);
     if (!canActivate) {
       return false;
     }
@@ -34,11 +33,18 @@ export class AdminGuard extends AuthGuard('jwt') {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
 
-    if (
-      !user?.permission ||
-      !(Permission[user.permission] <= Permission[requiredPermission])
-    ) {
-      throw new ForbiddenException('해당 페이지에 접근할 권한이 없습니다.');
+    if (!user?.permission) {
+      throw new InternalServerErrorException('사용자 권한 정보가 없습니다.');
+    }
+
+    const userPermissionLevel = Object.keys(Permission).indexOf(
+      user.permission,
+    );
+    const requiredPermissionLevel =
+      Object.keys(Permission).indexOf(requiredPermission);
+
+    if (userPermissionLevel > requiredPermissionLevel) {
+      throw new ForbiddenException('해당 작업을 수행할 권한이 없습니다.');
     }
 
     return true;
