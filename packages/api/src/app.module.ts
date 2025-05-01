@@ -6,6 +6,7 @@ import { UserService } from './user/user.service';
 import { UserModule } from './user/user.module';
 import { MinioModule } from './minio/minio.module';
 import { ConfigModule } from '@nestjs/config';
+import { HelloModule } from './hello/hello.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { ConfigModule } from '@nestjs/config';
     PrismaModule,
     UserModule,
     MinioModule,
+    HelloModule,
   ],
   providers: [PrismaService, UserService],
 })

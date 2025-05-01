@@ -1,8 +1,10 @@
 model Hello {
   id Int @id @default(autoincrement())
 
-  foo String
+  foo String @unique
   bar String?
+
+  isHello Boolean
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
