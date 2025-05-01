@@ -8,41 +8,34 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
-  ApiBody,
   ApiOperation,
   ApiResponse,
+  ApiTags,
 } from '@nestjs/swagger';
 import { UserService } from './user.service';
-import { ChangePermissionDto } from './dto/changeInformations.dto';
+import { ChangePermissionDto } from './dto/change-permission.dto';
+import { DeleteAccountDto } from './dto/delete-account.dto';
 import { AdminGuard } from '@/auth/guards/admin.guard';
 
+@ApiTags('User')
 @Controller('user')
 @SetMetadata('permission', 'ADMIN')
 @UseGuards(AdminGuard)
-@ApiBearerAuth()
+@ApiBearerAuth('accessToken')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @Post('/permission/change')
   @ApiOperation({ summary: '권한 변경' })
   @ApiResponse({ type: Boolean })
-  @Post('/permission/change')
-  async changePermission(@Body() changePermissionDto: ChangePermissionDto) {
-    return await this.userService.changePermission(
-      changePermissionDto.email,
-      changePermissionDto.newPermission,
-    );
+  async changePermission(@Body() dto: ChangePermissionDto) {
+    return this.userService.changePermission(dto);
   }
 
-  @ApiOperation({ summary: '계정 삭제' })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: { email: { type: 'string' } },
-    },
-  })
-  @ApiResponse({ type: Boolean })
   @Delete('/account')
-  async deleteAccount(@Body('email') email: string) {
-    return await this.userService.deleteAccount(email);
+  @ApiOperation({ summary: '계정 삭제' })
+  @ApiResponse({ type: Boolean })
+  async deleteAccount(@Body() dto: DeleteAccountDto) {
+    return this.userService.deleteAccount(dto);
   }
 }

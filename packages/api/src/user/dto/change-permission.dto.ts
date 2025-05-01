@@ -1,20 +1,20 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsEmail, IsEnum } from 'class-validator';
 import { Permission } from '@/common/enums/Permission.enum';
-import { IsEnum, IsString } from 'class-validator';
 
 export class ChangePermissionDto {
+  @IsEmail()
   @ApiProperty({
-    description: '사용자 이메일',
+    description: '권한을 변경할 사용자의 이메일',
     example: 'user@example.com',
   })
-  @IsString()
   email: string;
 
+  @IsEnum(Permission)
   @ApiProperty({
-    description: '새로운 권한',
-    example: 'USER',
+    description: '변경할 권한',
+    example: 'ADMIN',
     enum: Permission,
   })
-  @IsEnum(Permission)
   newPermission: Permission;
 }

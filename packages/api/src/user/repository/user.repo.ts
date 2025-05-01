@@ -12,8 +12,10 @@ export class UserRepository {
       return await this.prismaService.user.findUnique({
         where: { email },
       });
-    } catch {
-      throw new InternalServerErrorException();
+    } catch (error) {
+      throw new InternalServerErrorException(
+        '사용자 조회 중 오류가 발생했습니다.',
+      );
     }
   }
 
@@ -22,30 +24,36 @@ export class UserRepository {
       return await this.prismaService.user.create({
         data: { email, name, permission },
       });
-    } catch {
-      throw new InternalServerErrorException();
+    } catch (error) {
+      throw new InternalServerErrorException(
+        '사용자 생성 중 오류가 발생했습니다.',
+      );
     }
   }
 
   async changePermission(email: string, permission: PermissionEnum) {
     try {
-      await this.prismaService.user.update({
+      return await this.prismaService.user.update({
         where: { email },
         data: { permission: PrismaPermission[permission] },
       });
-      return true;
-    } catch {
-      throw new InternalServerErrorException();
+    } catch (error) {
+      throw new InternalServerErrorException(
+        '권한 변경 중 오류가 발생했습니다.',
+      );
     }
   }
 
   async deleteAccount(email: string) {
     try {
       await this.prismaService.user.delete({
-        where: { email: email },
+        where: { email },
       });
-    } catch {
-      throw new InternalServerErrorException();
+      return true;
+    } catch (error) {
+      throw new InternalServerErrorException(
+        '계정 삭제 중 오류가 발생했습니다.',
+      );
     }
   }
 }
