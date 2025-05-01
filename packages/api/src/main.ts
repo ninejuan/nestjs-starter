@@ -9,8 +9,6 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { SwaggerTheme, SwaggerThemeNameEnum } from 'swagger-themes';
 import { NegativeNumberPipe } from './common/pipes/foo.pipe';
 import { ConfigService } from '@nestjs/config';
-import { TransformInterceptor } from './common/interceptor/transform.interceptor';
-import { ApiResponseDto } from './common/dto/api-response.dto';
 
 const logger = new Logger('bootstrap');
 
@@ -19,7 +17,6 @@ async function bootstrap() {
   const configService = new ConfigService();
 
   app.useGlobalFilters(new HttpExceptionFilter(), new PrismaExceptionFilter());
-  app.useGlobalInterceptors(new TransformInterceptor());
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -61,9 +58,7 @@ async function bootstrap() {
     )
     .build();
 
-  const document = SwaggerModule.createDocument(app, config, {
-    extraModels: [ApiResponseDto],
-  });
+  const document = SwaggerModule.createDocument(app, config);
 
   SwaggerModule.setup('api-docs', app, document, {
     jsonDocumentUrl: 'api-docs/json',

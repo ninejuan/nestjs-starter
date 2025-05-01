@@ -4,7 +4,6 @@ import {
   PrismaClient,
   Permission as PrismaPermission,
 } from '@your-organization/database';
-import * as bcrypt from 'bcryptjs';
 import 'dotenv/config';
 
 async function main() {
@@ -13,16 +12,13 @@ async function main() {
   try {
     await prisma.$connect();
 
-    const { DEFAULT_ADMIN_EMAIL, DEFAULT_ADMIN_PW, SALT_ROUND } = process.env;
+    const { DEFAULT_ADMIN_EMAIL, SALT_ROUND } = process.env;
 
-    if (!DEFAULT_ADMIN_EMAIL || !DEFAULT_ADMIN_PW || !SALT_ROUND) {
+    if (!DEFAULT_ADMIN_EMAIL || !SALT_ROUND) {
       throw new Error(
         '기본 관리자 계정을 생성하기 위한 정보가 입력되지 않았습니다.',
       );
     }
-
-    const salt = await bcrypt.genSalt(parseInt(SALT_ROUND));
-    const encryptedPassword = await bcrypt.hash(DEFAULT_ADMIN_PW, salt);
 
     await prisma.user.create({
       data: {

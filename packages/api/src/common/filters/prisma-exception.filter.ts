@@ -12,7 +12,6 @@ import {
   PrismaUniqueConstraintError,
   toTypedPrismaError,
 } from '@/common/prisma/prisma.exception';
-import { ApiResponseDto } from '../dto/api-response.dto';
 
 @Catch(PrismaClientKnownRequestError)
 export class PrismaExceptionFilter implements ExceptionFilter {
@@ -30,18 +29,22 @@ export class PrismaExceptionFilter implements ExceptionFilter {
 
     if (prismaError instanceof PrismaUniqueConstraintError) {
       status = HttpStatus.CONFLICT;
+
       message = '중복된 데이터가 존재합니다.';
     } else if (prismaError instanceof PrismaRecordDoesNotExistError) {
       status = HttpStatus.NOT_FOUND;
+
       message = '데이터를 찾을 수 없습니다.';
     } else if (prismaError instanceof PrismaForeignKeyConstraintError) {
       status = HttpStatus.BAD_REQUEST;
+
       message = '입력한 데이터가 올바르지 않습니다.';
     }
 
-    const errorResponse = new ApiResponseDto();
-    errorResponse.status = status;
-    errorResponse.message = message;
-    response.status(status).json(errorResponse);
+    response.status(status).json({
+      statusCode: status,
+      message,
+      error: prismaError.code,
+    });
   }
 }
